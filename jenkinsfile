@@ -1,9 +1,7 @@
 node('jdk11-mvn3.8.5') {
-     triggers { 
-        cron('0 * * * *')
-    }
+    properties([pipelineTriggers([cron('0 * * * *')])])
     stage('git') {
-        git 'https://github.com/yadavallimallikharjua/spring-petclinic.git'
+        git url: 'https://github.com/yadavallimallikharjua/spring-petclinic.git'
     }
     stage('build') {
         sh '''
@@ -20,3 +18,4 @@ node('jdk11-mvn3.8.5') {
         junit '**/TEST-*.xml'
     }
 }
+
