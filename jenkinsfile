@@ -1,5 +1,5 @@
 pipeline {
-      label(java11_mvn3.8.5)
+      label('java11_mvn3.8.5')
       triggers{ cron('H * * * *') }
       stages {
          stage('scm') {
