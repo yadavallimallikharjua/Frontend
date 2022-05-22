@@ -1,11 +1,27 @@
-node('manam-1') {  
-stage('git') {
-    git 'https://github.com/yadavallimallikharjua/spring-petclinic.git'
-}
-stage('build') {
-    sh 'mvn clean package'
-}
-stage ('archive') {
-   archiveArtifacts artifacts: '**Test/-*.xml', followSymlinks: false  
-}
-}
+pipeline {
+      label(java11_mvn3.8.5)
+      triggers{ cron('H * * * *') }
+      stages {
+         stage('scm') {
+            steps {
+              git branch: 'declarative', url: 'yadavalli'
+             }
+          }
+         stage('build') {
+             steps {
+                '/usr/local/apache-maven3.8.5/mvn clean package'
+               }
+            } 
+         stage('publish test reports') {
+             steps {
+                junit '**/TEST-*.xml'
+               }
+           }
+          stage('archive') {
+              steps {
+                 archiveArtifacts: 'target/*.jar'
+              }
+          }
+      }
+  }
+ 
