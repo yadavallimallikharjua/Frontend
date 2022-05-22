@@ -1,15 +1,15 @@
 pipeline {
-      label('jdk11-mvn3.8.5')
-      triggers{ cron('H * * * *') }
-      stages {
+     agent {label 'jdk11-mvn3.8.5'}
+     triggers{ cron('H * * * *') }
+     stages {
          stage('scm') {
-            steps {
-              git branch: 'declarative', url: 'https://github.com/yadavallimallikharjua/spring-petclinic.git'
-             }
-          }
-         stage('build') {
              steps {
-                '/usr/local/apache-maven3.8.5/mvn clean package'
+               git branch: 'declarative', url: 'https://github.com/yadavallimallikharjua/spring-petclinic.git'
+              }
+           }
+        stage('build') {
+            steps {
+                '/usr/local/apache-maven3.8.5/bin/mvn clean package'
                }
             } 
          stage('publish test reports') {
@@ -19,9 +19,9 @@ pipeline {
            }
           stage('archive') {
               steps {
-                 archiveArtifacts: 'target/*.jar'
+                 archiveArtifacts artifacts: 'target/*.jar'
               }
           }
       }
   }
- 
+
