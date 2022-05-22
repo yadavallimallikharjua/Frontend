@@ -9,9 +9,14 @@ pipeline {
            }
         stage('build') {
             steps {
-                '/usr/local/apache-maven3.8.5/bin/mvn clean package'
-               }
-            } 
+                sh '''
+            echo "PATH=${PATH}"
+            echo "M2_HOME=${M2_HOME}"
+
+                '''
+              sh '/usr/local/apache-maven-3.8.5/bin/mvn clean package
+            }    
+          } 
          stage('publish test reports') {
              steps {
                 junit '**/TEST-*.xml'
@@ -24,4 +29,3 @@ pipeline {
           }
       }
   }
-
