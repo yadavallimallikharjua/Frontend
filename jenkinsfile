@@ -1,31 +1,47 @@
 pipeline {
-     agent {label 'jdk11-mvn3.8.5'}
-     triggers{ cron('H * * * *') }
-     stages {
-         stage('scm') {
-             steps {
-               git branch: 'declarative', url: 'https://github.com/yadavallimallikharjua/spring-petclinic.git'
-              }
-           }
+    agent { label 'malli' }
+    triggers { 
+        cron('H * * * *')
+    }
+	 stages {
+        stage('scm') {
+            steps {
+               
+                git url: 'https://github.com/yadavallimallikharjua/spring-petclinic.git', branch: 'declarative'
+            }
+        }
         stage('build') {
             steps {
-                sh '''
-            echo "PATH=${PATH}"
-            echo "M2_HOME=${M2_HOME}"
+                withSonarQubeEnv(installationName: 'SONAR_9.4.0') {
+                    sh "mvn clean package sonar:sonar"                                  
+                }
+            }
+        }
+		stage("Quality Gate") {
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
+                    // true = set pipeline to UNSTABLE, false = don't
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+           stage ('Artifactory configuration') {
+            steps {
+                rtMavenDeployer (
+                    id: "MAVEN_DEPLOYER",
+                    serverId: SONAR_IN,
+                    releaseRepo: ARTIFACTORY_LOCAL_RELEASE_REPO,
+                    snapshotRepo: ARTIFACTORY_LOCAL_SNAPSHOT_REPO
+                )
 
-                '''
-              sh '/usr/local/apache-maven-3.8.5/bin/mvn clean package'
-            }    
-          } 
-         stage('publish test reports') {
-             steps {
-                junit '**/TEST-*.xml'
-               }
-           }
-          stage('archive') {
-              steps {
-                 archiveArtifacts artifacts: 'target/*.jar'
-              }
-          }
-      }
-  }
+                rtMavenResolver (
+                    id: "MAVEN_RESOLVER",
+                    serverId: SONAR_IN,
+                    releaseRepo: ARTIFACTORY_VIRTUAL_RELEASE_REPO,
+                    snapshotRepo: ARTIFACTORY_VIRTUAL_SNAPSHOT_REPO
+                )
+            }
+        }  
+    }
+}
