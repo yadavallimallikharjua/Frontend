@@ -1,47 +1,44 @@
 pipeline {
     agent { label 'malli' }
-    triggers { 
+    triggers {
         cron('H * * * *')
     }
-	 stages {
-        stage('scm') {
+    stages {
+        stage('Source Code') {
             steps {
-               
-                git url: 'https://github.com/yadavallimallikharjua/spring-petclinic.git', branch: 'declarative'
+                git url: 'https://github.com/yadavallimallikharjua/spring-petclinic.git', 
+                branch: 'declarative'
             }
+            
         }
-        stage('build') {
-            steps {
-                withSonarQubeEnv(installationName: 'SONAR_9.4.0') {
-                    sh "mvn clean package sonar:sonar"                                  
-                }
-            }
-        }
-		stage("Quality Gate") {
-            steps {
-                timeout(time: 1, unit: 'HOURS') {
-                    // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
-                    // true = set pipeline to UNSTABLE, false = don't
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
-           stage ('Artifactory configuration') {
+        stage('Artifactory-Configuration') {
             steps {
                 rtMavenDeployer (
-                    id: "MAVEN_DEPLOYER",
-                    serverId: SONAR_IN,
-                    releaseRepo: ARTIFACTORY_LOCAL_RELEASE_REPO,
-                    snapshotRepo: ARTIFACTORY_LOCAL_SNAPSHOT_REPO
-                )
-
-                rtMavenResolver (
-                    id: "MAVEN_RESOLVER",
-                    serverId: SONAR_IN,
-                    releaseRepo: ARTIFACTORY_VIRTUAL_RELEASE_REPO,
-                    snapshotRepo: ARTIFACTORY_VIRTUAL_SNAPSHOT_REPO
+                    id: 'spc-deployer',
+                    serverId: 'JFROG_IN',
+                    releaseRepo: 'releaseRepo',
+                    snapshotRepo: 'snapshotRepo',
+                    
                 )
             }
-        }  
+        }
+        stage('Build the Code and sonarqube-analysis') {
+            steps {
+                rtMavenRun (
+                    // Tool name from Jenkins configuration.
+                    tool: 'MVN_DEFAULT',
+                    pom: 'pom.xml',
+                    goals: 'clean install',
+                    // Maven options.
+                    deployerId: 'spc-deployer',
+                )
+                
+            }
+        }
+        stage('reporting') {
+            steps {
+                junit testResults: 'target/surefire-reports/*.xml'
+            }
+        }   
     }
 }
