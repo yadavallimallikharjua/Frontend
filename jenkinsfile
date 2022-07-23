@@ -1,20 +1,20 @@
-node('jdk11-mvn3.8.5') {
-    properties([pipelineTriggers([cron('0 * * * *')])])
-    stage('git') {
-        git url: 'https://github.com/yadavallimallikharjua/spring-petclinic.git'
-    }
-    stage('build') {
-        sh '''
-            echo "PATH=${PATH}"
-            echo "M2_HOME=${M2_HOME}"
-
-        '''
-        sh '/usr/local/apache-maven-3.8.5/bin/mvn clean package'
-    }
-    stage('archive') {
-        archiveArtifacts artifacts: 'target/*.jar', followSymlinks: false
-    }
-    stage('publish test reports') {
-        junit '**/TEST-*.xml'
+pipeline {
+    agent any
+    stages {
+        stage('scm') {
+            steps {
+                git branch: 'master', url: 'https://github.com/yadavallimallikharjua/openmrs-core.git'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'mvn clean package '
+            }
+        }
+        stage('Build image') {
+            steps {
+                sh 'docker image build -t myimage:1.0 .'
+            }
+        }
     }
 }
