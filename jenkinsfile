@@ -35,6 +35,12 @@ pipeline {
                 }
             }
         }
-
+        stage('Deploy App') {
+            steps {
+                script {
+                kubernetesDeploy(configs: "myimage4.yaml", kubeconfigId: "K8_config")
+                }
+            }
+        }
     }
 }
