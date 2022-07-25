@@ -1,9 +1,17 @@
 pipeline {
+    environment {
+        registry = "9492453554/MYIMAGE4"
+        registryCredential = 'DOCKER_HUB'
+        dockerImage = ''
+    }
     agent any
+    tools {
+        maven 'MVN_version'
+    }
     stages {
         stage('scm') {
             steps {
-                git branch: 'master', url: 'https://github.com/yadavallimallikharjua/openmrs-core.git'
+                git branch: 'main', url: 'https://github.com/yadavallimallikharjua/spring-petclinic.git'
             }
         }
         stage('Build') {
@@ -13,8 +21,20 @@ pipeline {
         }
         stage('Build image') {
             steps {
-                sh 'docker image build -t myimage:1.0 .'
+                script {
+                    dockerImage = docker.build registry 
+                }
             }
         }
+        stage('push our image') { 
+            steps {
+                script {
+                    docker.withRegistry("","registryCredential") {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
+
     }
 }
