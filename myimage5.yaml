@@ -2,18 +2,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: spc-rs
+  name: pcs-rs
   labels:
-    app: spc
+    app: pcs
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: spc
+      app: pcs
   template:
     metadata:
       labels:
-        app: spc
+        app: pcs
     spec:
       containers:
         - name: myimage
