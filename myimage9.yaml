@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: pcss-rs
+  namespace: production
   labels:
     app: pcs1
 spec:
