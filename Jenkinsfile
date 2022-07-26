@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        registry = "9492453554/myimage13"
+        registry = "9492453554/myimage111"
         registryCredential = 'DOCKER_HUB'
         dockerImage = ''
     }
@@ -38,7 +38,7 @@ pipeline {
         stage('Deploy App') {
             steps {
                 script {
-                kubernetesDeploy(configs: "myimage13.yaml", kubeconfigId: "k8_config")
+                kubernetesDeploy(configs: "myimage111.yaml", kubeconfigId: "k8_config")
                 }
             }
         }
