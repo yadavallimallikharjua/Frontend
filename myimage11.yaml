@@ -2,22 +2,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pcss-rs
-  namespace: production
+  name: pch-rc
   labels:
-    app: pcc
+    app: pch
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: pcc
+      app: pch
   template:
     metadata:
       labels:
-        app: pcc
+        app: pch
     spec:
       containers:
         - name: myimage
-          image: 9492453554/myimage0:latest
+          image: 9492453554/myimage11:latest
           ports:
           - containerPort: 8080
