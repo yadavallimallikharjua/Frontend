@@ -5,13 +5,10 @@ pipeline {
         dockerImage = ''
     }
     agent any
-    tools {
-        maven 'MVN_version'
-    }
     stages {
         stage('scm') {
             steps {
-                git branch: 'main', url: 'https://github.com/yadavallimallikharjua/spring-petclinic.git'
+                git branch: 'development', url: 'https://github.com/yadavallimallikharjua/spring-petclinic.git'
             }
         }
         stage('Build image') {
