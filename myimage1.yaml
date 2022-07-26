@@ -5,16 +5,16 @@ metadata:
   name: pcss-rs
   namespace: production
   labels:
-    app: pcs1
+    app: pcc
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: pcss
+      app: pcc
   template:
     metadata:
       labels:
-        app: pcss
+        app: pcc
     spec:
       containers:
         - name: myimage
