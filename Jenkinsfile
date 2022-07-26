@@ -5,6 +5,9 @@ pipeline {
         registryCredential = 'DOCKER_HUB'
         dockerImage = ''
     }
+    tools {
+        maven 'MVN_version'
+    }
     stages {
         stage('scm') {
             steps {
