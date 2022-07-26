@@ -2,21 +2,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pchh-rc
+  name: pchhh-rc
   labels:
     app: pchh
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: pchh
+      app: pchhh
   template:
     metadata:
       labels:
-        app: pchh
+        app: pchhh
     spec:
       containers:
         - name: myimage
-          image: 9492453554/myimage12:latest
+          image: 9492453554/myimage13:latest
           ports:
           - containerPort: 8080
