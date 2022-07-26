@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('scm') {
             steps {
-                git branch: 'main', url: 'https://github.com/yadavallimallikharjua/spring-petclinic.git'
+                git branch: 'production', url: 'https://github.com/yadavallimallikharjua/spring-petclinic.git'
             }
         }
         stage('Build image') {
