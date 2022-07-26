@@ -11,6 +11,11 @@ pipeline {
                 git branch: 'mahaprastanam', url: 'https://github.com/yadavallimallikharjua/spring-petclinic.git'
             }
         }
+        stage('Build') {
+            steps {
+                sh 'mvn clean package '
+            }
+        }
         stage('Build image') {
             steps {
                 script {
