@@ -1,22 +1,14 @@
 pipeline {
+    agent any
     environment {
-        registry = "9492453554/myimage9"
+        registry = "9492453554/myimage0"
         registryCredential = 'DOCKER_HUB'
         dockerImage = ''
-    }
-    agent any
-    tools {
-        maven 'MVN_version'
     }
     stages {
         stage('scm') {
             steps {
-                git branch: 'main', url: 'https://github.com/yadavallimallikharjua/spring-petclinic.git'
-            }
-        }
-        stage('Build') {
-            steps {
-                sh 'mvn clean package '
+                git branch: 'development', url: 'https://github.com/yadavallimallikharjua/spring-petclinic.git'
             }
         }
         stage('Build image') {
@@ -38,7 +30,7 @@ pipeline {
         stage('Deploy App') {
             steps {
                 script {
-                kubernetesDeploy(configs: "myimage9.yaml", kubeconfigId: "k8_config")
+                kubernetesDeploy(configs: "myimage0.yaml", kubeconfigId: "k8_config")
                 }
             }
         }
