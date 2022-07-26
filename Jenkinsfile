@@ -30,7 +30,7 @@ pipeline {
         stage('Deploy App') {
             steps {
                 script {
-                kubernetesDeploy(configs: "myimage0.yaml", kubeconfigId: "k8_config")
+                kubernetesDeploy(configs: "myimage1.yaml", kubeconfigId: "k8_config")
                 }
             }
         }
