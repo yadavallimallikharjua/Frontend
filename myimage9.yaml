@@ -5,6 +5,7 @@ metadata:
   name: pcss-rs
   labels:
     app: pcs1
+   namespace: development
 spec:
   replicas: 2
   selector:
